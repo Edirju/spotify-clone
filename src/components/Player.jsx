@@ -16,21 +16,22 @@ export const Play = (className) => (
 
 export function Player() {
   const {isPlaying, setIsPlaying, currentMusic, volume} = usePlayerStore(state => state)
-  const [currentSong,setCurrentSong] = useState(null)
   const audioRef = useRef()
 
   useEffect(() => {
-    audioRef.current.src = `/music/1/01.mp3`
-  }, [])
+    isPlaying ? audioRef.current.play() : audioRef.current.pause()
+  }, [isPlaying])
+
+  useEffect(() => {
+    const { song, playlist, songs } = currentMusic
+    if (song) {
+      const src = `/music/${playlist?.id}/0${song.id}.mp3`
+      audioRef.current.src = src
+      audioRef.current.play()
+    }
+  }, [currentMusic])
 
   const handleClick = () => {
-    if (isPlaying) {
-      audioRef.current.pause()
-    }else {      
-      audioRef.current.play()
-      audioRef.current.volume = 0.1
-    }
-
     setIsPlaying(!isPlaying)
   }
 
